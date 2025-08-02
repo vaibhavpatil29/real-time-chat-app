@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to ChatApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --info-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            --hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            
+            /* Light theme */
+            --bg-color-light: #f8fafc;
+            --text-color-light: #2d3748;
+            --card-bg-light: rgba(255, 255, 255, 0.95);
+            --input-bg-light: #f7fafc;
+            --input-border-light: #e2e8f0;
+            --input-focus-light: #667eea;
+            
+            /* Dark theme */
+            --bg-color-dark: #0f172a;
+            --text-color-dark: #f1f5f9;
+            --card-bg-dark: rgba(30, 41, 59, 0.95);
+            --input-bg-dark: #1e293b;
+            --input-border-dark: #475569;
+            --input-focus-dark: #818cf8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 20px 0;
+        }
+
+        body[data-theme="light"] {
+            background: var(--primary-gradient);
+            color: var(--text-color-light);
+        }
+
+        body[data-theme="dark"] {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-color-dark);
+        }
+
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.05"><circle cx="30" cy="30" r="2"/></g></g></svg>');
+            animation: float 25s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        .chat-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 20px;
+        }
+
+        .chat-card {
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 45px 40px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideUp 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body[data-theme="light"] .chat-card {
+            background: var(--card-bg-light);
+        }
+
+        body[data-theme="dark"] .chat-card {
+            background: var(--card-bg-dark);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .app-logo {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--success-gradient);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: white;
+            margin-bottom: 20px;
+            animation: pulse 3s infinite;
+            box-shadow: 0 10px 30px rgba(17, 153, 142, 0.3);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            opacity: 0.8;
+            font-size: 1.1rem;
+            margin-bottom: 35px;
+            font-weight: 400;
+        }
+
+        .room-selection {
+            margin-bottom: 30px;
+        }
+
+        .room-selection {
+            margin-bottom: 25px;
+        }
+
+        .room-card {
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        body[data-theme="light"] .room-card {
+            background: var(--input-bg-light);
+            border-color: var(--input-border-light);
+        }
+
+        body[data-theme="dark"] .room-card {
+            background: var(--input-bg-dark);
+            border-color: var(--input-border-dark);
+        }
+
+        .room-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .room-card:hover::before {
+            left: 100%;
+        }
+
+        .room-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+
+        body[data-theme="light"] .room-card:hover {
+            border-color: var(--input-focus-light);
+            background: white;
+        }
+
+        body[data-theme="dark"] .room-card:hover {
+            border-color: var(--input-focus-dark);
+            background: #334155;
+        }
+
+        .room-card.selected {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        body[data-theme="light"] .room-card.selected {
+            border-color: var(--input-focus-light);
+            background: white;
+        }
+
+        body[data-theme="dark"] .room-card.selected {
+            border-color: var(--input-focus-dark);
+            background: #334155;
+        }
+
+        .room-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .room-icon.general { background: var(--success-gradient); }
+        .room-icon.tech { background: var(--primary-gradient); }
+        .room-icon.gaming { background: var(--secondary-gradient); }
+        .room-icon.music { background: var(--warning-gradient); }
+
+        .room-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .room-description {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            line-height: 1.4;
+        }
+
+        .room-users {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        body[data-theme="dark"] .room-users {
+            background: rgba(129, 140, 248, 0.1);
+            color: #818cf8;
+        }
+
+        .enter-btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            background: var(--success-gradient);
+            color: white;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .enter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .enter-btn:hover::before {
+            left: 100%;
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(17, 153, 142, 0.4);
+        }
+
+        .enter-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .enter-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            color: white;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .user-info {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        body[data-theme="dark"] .user-info {
+            background: rgba(129, 140, 248, 0.1);
+        }
+
+        .welcome-text {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .username-display {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #667eea;
+        }
+
+        body[data-theme="dark"] .username-display {
+            color: #818cf8;
+        }
+
+        /* Radio button styling */
+        input[type="radio"] {
+            display: none;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .chat-card {
+                padding: 35px 25px;
+                margin: 0 15px;
+            }
+            
+            .room-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            h1 {
+                font-size: 1.9rem;
+            }
+            
+            .logo-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
+            }
+            
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        @media (max-height: 700px) {
+            .chat-card {
+                padding: 30px 35px;
+            }
+            
+            .app-logo {
+                margin-bottom: 25px;
+            }
+            
+            .logo-icon {
+                width: 65px;
+                height: 65px;
+                font-size: 1.8rem;
+                margin-bottom: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 8px;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 25px;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+        <i class="fas fa-moon" id="theme-icon"></i>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-card">
+            <div class="app-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h1>Welcome to ChatApp</h1>
+                <p class="subtitle">Choose a room and start chatting!</p>
+            </div>
+
+            <div class="user-info" id="user-info" style="display: none;">
+                <div class="welcome-text">Welcome back,</div>
+                <div class="username-display" id="username-display">User</div>
+            </div>
+
+            <form action="{{ url_for('main.chat', room='general') }}" method="get" id="chatForm">
+                <div class="room-selection">
+                    <div class="room-card selected">
+                        <div class="room-users">24 online</div>
+                        <div class="room-icon general">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="room-name">General Chat</div>
+                        <div class="room-description">Open discussion for everyone. Connect with people from around the world!</div>
+                    </div>
+                </div>
+
+                <button type="submit" class="enter-btn" id="enter-btn">
+                    <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>
+                    Enter General Chat
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Theme management
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        const themeIcon = document.getElementById('theme-icon');
+        
+        document.body.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+
+        function toggleTheme() {
+            const newTheme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            themeIcon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
+        // Form submission with loading state
+        chatForm.addEventListener('submit', function(e) {
+            const button = enterBtn;
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<div class="loading"></div> Joining General Chat...';
+            button.disabled = true;
+            
+            // Re-enable button after 3 seconds if form hasn't been submitted
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }, 3000);
+        });
+
+        // Simulate user info (you can populate this from your backend)
+        function showUserInfo(username) {
+            const userInfo = document.getElementById('user-info');
+            const usernameDisplay = document.getElementById('username-display');
+            
+            if (username) {
+                usernameDisplay.textContent = username;
+                userInfo.style.display = 'block';
+            }
+        }
+
+        // Example: showUserInfo('JohnDoe');
+
+        // Animate room card on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const roomCard = document.querySelector('.room-card');
+            roomCard.style.opacity = '0';
+            roomCard.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                roomCard.style.transition = 'all 0.5s ease';
+                roomCard.style.opacity = '1';
+                roomCard.style.transform = 'translateY(0)';
+            }, 100);
+        });
+
+        // Random online user count updates (optional)
+        function updateOnlineUsers() {
+            const userCount = document.querySelector('.room-users');
+            const baseUsers = 24;
+            const variation = Math.floor(Math.random() * 6) - 3; // -3 to +3
+            const newCount = Math.max(1, baseUsers + variation);
+            userCount.textContent = `${newCount} online`;
+        }
+
+        // Update user count every 30 seconds
+        setInterval(updateOnlineUsers, 30000);
+    </script>
+</body>
+</html>

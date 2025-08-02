@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - ChatApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --card-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            --hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            
+            /* Light theme */
+            --bg-color-light: #f8fafc;
+            --text-color-light: #2d3748;
+            --card-bg-light: rgba(255, 255, 255, 0.95);
+            --input-bg-light: #f7fafc;
+            --input-border-light: #e2e8f0;
+            --input-focus-light: #667eea;
+            
+            /* Dark theme */
+            --bg-color-dark: #0f172a;
+            --text-color-dark: #f1f5f9;
+            --card-bg-dark: rgba(30, 41, 59, 0.95);
+            --input-bg-dark: #1e293b;
+            --input-border-dark: #475569;
+            --input-focus-dark: #818cf8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 10px 0;
+        }
+
+        body[data-theme="light"] {
+            background: var(--primary-gradient);
+            color: var(--text-color-light);
+        }
+
+        body[data-theme="dark"] {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-color-dark);
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.05"><circle cx="30" cy="30" r="2"/></g></g></svg>');
+            animation: float 25s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        .register-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+            margin: 0 15px;
+            max-height: calc(100vh - 20px);
+            overflow-y: auto;
+        }
+
+        .register-card {
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px 35px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideUp 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body[data-theme="light"] .register-card {
+            background: var(--card-bg-light);
+        }
+
+        body[data-theme="dark"] .register-card {
+            background: var(--card-bg-dark);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .register-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .app-logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--success-gradient);
+            border-radius: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 15px;
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            opacity: 0.7;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+        }
+
+        .form-group i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            z-index: 2;
+            transition: color 0.3s ease;
+            pointer-events: none;
+        }
+
+        body[data-theme="light"] .form-group i {
+            color: #64748b;
+        }
+
+        body[data-theme="dark"] .form-group i {
+            color: #94a3b8;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 1;
+        }
+
+        body[data-theme="light"] .form-control {
+            background: var(--input-bg-light);
+            color: var(--text-color-light);
+            border-color: var(--input-border-light);
+        }
+
+        body[data-theme="dark"] .form-control {
+            background: var(--input-bg-dark);
+            color: var(--text-color-dark);
+            border-color: var(--input-border-dark);
+        }
+
+        .form-control:focus {
+            outline: none;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.15);
+        }
+
+        body[data-theme="light"] .form-control:focus {
+            border-color: var(--input-focus-light);
+            background: white;
+        }
+
+        body[data-theme="dark"] .form-control:focus {
+            border-color: var(--input-focus-dark);
+            background: #334155;
+        }
+
+        .form-control:focus ~ i {
+            color: var(--input-focus-light);
+        }
+
+        body[data-theme="dark"] .form-control:focus ~ i {
+            color: var(--input-focus-dark);
+        }
+
+        .password-strength {
+            margin-top: 6px;
+            height: 3px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-weak { background: #ef4444; width: 25%; }
+        .strength-fair { background: #f59e0b; width: 50%; }
+        .strength-good { background: #10b981; width: 75%; }
+        .strength-strong { background: #059669; width: 100%; }
+
+        .password-requirements {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            opacity: 0.8;
+            display: none;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .requirement.met {
+            color: #10b981;
+        }
+
+        .requirement.met i {
+            color: #10b981;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            background: var(--success-gradient);
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .register-btn:hover::before {
+            left: 100%;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(17, 153, 142, 0.4);
+        }
+
+        .register-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .register-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .switch-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .switch-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        body[data-theme="dark"] .switch-link a {
+            color: #818cf8;
+        }
+
+        .switch-link a:hover {
+            text-decoration: underline;
+            transform: translateY(-1px);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            color: white;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 18px 0;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .terms-checkbox input[type="checkbox"] {
+            margin-top: 1px;
+            transform: scale(1.1);
+            accent-color: #667eea;
+        }
+
+        .terms-checkbox a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        body[data-theme="dark"] .terms-checkbox a {
+            color: #818cf8;
+        }
+
+        .terms-checkbox a:hover {
+            text-decoration: underline;
+        }
+
+        .success-message {
+            background: var(--success-gradient);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: slideInDown 0.5s ease;
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: shake 0.5s ease-in-out;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Responsive design */
+        @media (max-height: 700px) {
+            .register-card {
+                padding: 25px 30px;
+            }
+            
+            .app-logo {
+                margin-bottom: 20px;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                margin-bottom: 10px;
+            }
+            
+            h3 {
+                font-size: 1.6rem;
+                margin-bottom: 4px;
+            }
+            
+            .subtitle {
+                font-size: 0.85rem;
+                margin-bottom: 20px;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            .password-requirements {
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px 0;
+            }
+            
+            .register-container {
+                margin: 0 10px;
+                max-width: none;
+            }
+            
+            .register-card {
+                padding: 25px 20px;
+                border-radius: 15px;
+            }
+            
+            h3 {
+                font-size: 1.6rem;
+            }
+            
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .form-control {
+                padding: 14px 40px 14px 14px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .password-requirements {
+                display: none !important;
+            }
+            
+            .form-group {
+                margin-bottom: 12px;
+            }
+            
+            .register-card {
+                padding: 20px 25px;
+            }
+            
+            .app-logo {
+                margin-bottom: 15px;
+            }
+            
+            .logo-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+                margin-bottom: 8px;
+            }
+            
+            h3 {
+                font-size: 1.5rem;
+            }
+            
+            .subtitle {
+                font-size: 0.8rem;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+        <i class="fas fa-moon" id="theme-icon"></i>
+    </div>
+
+    <div class="register-container">
+        <div class="register-card">
+            <div class="app-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h3>Join ChatApp</h3>
+                <p class="subtitle">Create your account to get started</p>
+            </div>
+
+            <!-- Flash messages placeholder -->
+            <div id="flash-messages"></div>
+
+            <form method="POST" action="{{ url_for('main.register') }}" id="registerForm">
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        <i class="fas fa-user"></i>
+                        Username
+                    </label>
+                    <input type="text" class="form-control" id="username" name="username" 
+                           placeholder="Choose a unique username" required maxlength="20">
+                    <i class="fas fa-user"></i>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email Address
+                    </label>
+                    <input type="email" class="form-control" id="email" name="email" 
+                           placeholder="Enter your email address" required>
+                    <i class="fas fa-envelope"></i>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Password
+                    </label>
+                    <input type="password" class="form-control" id="password" name="password" 
+                           placeholder="Create a strong password" required minlength="6">
+                    <i class="fas fa-eye" id="password-toggle" onclick="togglePassword()" style="cursor: pointer;"></i>
+                    
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="strength-bar"></div>
+                    </div>
+                    
+                    <div class="password-requirements" id="password-requirements">
+                        <div class="requirement" id="length-req">
+                            <i class="fas fa-times"></i>
+                            <span>At least 6 characters</span>
+                        </div>
+                        <div class="requirement" id="letter-req">
+                            <i class="fas fa-times"></i>
+                            <span>Contains letters</span>
+                        </div>
+                        <div class="requirement" id="number-req">
+                            <i class="fas fa-times"></i>
+                            <span>Contains numbers</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">
+                        I agree to the <a href="#" onclick="showTerms()">Terms of Service</a> 
+                        and <a href="#" onclick="showPrivacy()">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="register-btn" id="register-btn">
+                    <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
+                    Create Account
+                </button>
+            </form>
+
+            <div class="switch-link">
+                Already have an account? <a href="{{ url_for('main.login') }}">Sign in here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme management
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        const themeIcon = document.getElementById('theme-icon');
+        
+        document.body.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+
+        function toggleTheme() {
+            const newTheme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            themeIcon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
+        // Password visibility toggle
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const passwordToggle = document.getElementById('password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordToggle.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                passwordToggle.className = 'fas fa-eye';
+            }
+        }
+
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            let score = 0;
+            const requirements = {
+                length: password.length >= 6,
+                letter: /[a-zA-Z]/.test(password),
+                number: /\d/.test(password),
+                special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+            };
+
+            // Update requirements display
+            document.getElementById('length-req').classList.toggle('met', requirements.length);
+            document.getElementById('letter-req').classList.toggle('met', requirements.letter);
+            document.getElementById('number-req').classList.toggle('met', requirements.number);
+
+            // Update icons
+            document.querySelector('#length-req i').className = requirements.length ? 'fas fa-check' : 'fas fa-times';
+            document.querySelector('#letter-req i').className = requirements.letter ? 'fas fa-check' : 'fas fa-times';
+            document.querySelector('#number-req i').className = requirements.number ? 'fas fa-check' : 'fas fa-times';
+
+            // Calculate strength
+            if (requirements.length) score++;
+            if (requirements.letter) score++;
+            if (requirements.number) score++;
+            if (requirements.special) score++;
+
+            // Update strength bar
+            const strengthBar = document.getElementById('strength-bar');
+            strengthBar.className = 'password-strength-bar';
+            
+            if (score === 1) strengthBar.classList.add('strength-weak');
+            else if (score === 2) strengthBar.classList.add('strength-fair');
+            else if (score === 3) strengthBar.classList.add('strength-good');
+            else if (score === 4) strengthBar.classList.add('strength-strong');
+
+            return score >= 3;
+        }
+
+        // Form validation and submission
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const button = document.getElementById('register-btn');
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Creating Account...';
+            button.disabled = true;
+            
+            // Re-enable button after 3 seconds if form hasn't been submitted
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }, 3000);
+        });
+
+        // Password input listener
+        document.getElementById('password').addEventListener('input', function() {
+            const isStrong = checkPasswordStrength(this.value);
+            const submitBtn = document.getElementById('register-btn');
+            
+            if (this.value.length > 0) {
+                document.getElementById('password-requirements').style.display = 'block';
+            } else {
+                document.getElementById('password-requirements').style.display = 'none';
+            }
+        });
+
+        // Username validation
+        document.getElementById('username').addEventListener('input', function() {
+            this.value = this.value.replace(/[^a-zA-Z0-9_-]/g, '');
+        });
+
+        // Input focus effects
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+
+        // Modal functions
+        function showTerms() {
+            showModal('Terms of Service', 'Terms of Service content would go here...');
+        }
+
+        function showPrivacy() {
+            showModal('Privacy Policy', 'Privacy Policy content would go here...');
+        }
+
+        function showModal(title, content) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                animation: fadeIn 0.3s ease;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 15px; max-width: 500px; margin: 20px; position: relative;">
+                    <h4 style="margin-bottom: 20px; color: #333;">${title}</h4>
+                    <p style="color: #666; line-height: 1.6;">${content}</p>
+                    <button onclick="this.closest('div').parentElement.remove()" 
+                            style="margin-top: 20px; padding: 10px 20px; background: var(--primary-gradient); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        Close
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // Auto-focus first input
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstInput = document.querySelector('input[name="username"]');
+            if (firstInput) {
+                setTimeout(() => firstInput.focus(), 500);
+            }
+        });
+
+        // Add fade in animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
