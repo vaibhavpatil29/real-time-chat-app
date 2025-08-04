@@ -2,6 +2,7 @@ services:
   - type: web
     name: chatapp
     env: python
+    region: oregon
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn --worker-class eventlet -w 1 --bind 0.0.0.0:$PORT run:app"
     plan: free
@@ -21,5 +22,6 @@ services:
 
   - type: pserv
     name: chatapp-db
+    region: oregon
     databaseName: chatapp
     plan: free
