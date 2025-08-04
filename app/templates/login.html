@@ -43,8 +43,10 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 20px 0;
         }
 
         body[data-theme="light"] {
@@ -364,14 +366,13 @@
         }
 
         .social-login {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            display: flex;
+            justify-content: center;
             margin-bottom: 20px;
         }
 
         .social-btn {
-            padding: 12px;
+            padding: 14px 24px;
             border: 2px solid rgba(255, 255, 255, 0.1);
             background: rgba(255, 255, 255, 0.05);
             color: currentColor;
@@ -381,14 +382,31 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            font-size: 0.9rem;
+            gap: 10px;
+            font-size: 0.95rem;
             text-decoration: none;
+            width: 100%;
+            max-width: 300px;
+            font-weight: 500;
         }
 
         .social-btn:hover {
             background: rgba(255, 255, 255, 0.1);
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .google-btn {
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+            border: 2px solid transparent;
+            color: white;
+        }
+
+        .google-btn:hover {
+            background: linear-gradient(135deg, #3367d6 0%, #2d8f47 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(66, 133, 244, 0.3);
         }
 
         .forgot-password {
@@ -414,13 +432,88 @@
             text-decoration: underline;
         }
 
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0 20px 0;
+            font-size: 0.9rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .remember-me input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkmark {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            margin-right: 8px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .remember-me input[type="checkbox"]:checked + .checkmark {
+            background: var(--primary-gradient);
+            border-color: #667eea;
+        }
+
+        .remember-me input[type="checkbox"]:checked + .checkmark::after {
+            content: '✓';
+            position: absolute;
+            top: -2px;
+            left: 2px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
         @media (max-width: 480px) {
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .forgot-password {
+                margin: 0;
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px 0;
+                align-items: flex-start;
+                min-height: 100vh;
+            }
+            
+            .login-container {
+                margin: 10px;
+                max-width: calc(100vw - 20px);
+            }
+            
             .login-card {
-                padding: 35px 25px;
-                margin: 15px;
+                padding: 30px 20px;
+                margin: 0;
+                border-radius: 20px;
             }
             
             h2 {
+                font-size: 1.6rem;
+            }
+            
+            .logo-icon {
+                width: 60px;
+                height: 60px;
                 font-size: 1.8rem;
             }
             
@@ -433,6 +526,25 @@
                 right: 15px;
                 width: 45px;
                 height: 45px;
+            }
+            
+            input[type="text"], input[type="password"] {
+                padding: 16px 16px 16px 45px;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+            
+            .form-group i {
+                left: 15px;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .login-card {
+                padding: 25px 15px;
+            }
+            
+            h2 {
+                font-size: 1.4rem;
             }
         }
     </style>
@@ -463,7 +575,7 @@
 
             <form method="POST" id="loginForm">
                 <div class="form-group">
-                    <input type="text" name="username" placeholder="Username" required autocomplete="username">
+                    <input type="text" name="username" placeholder="Username or Email" required autocomplete="username">
                     <i class="fas fa-user"></i>
                 </div>
                 
@@ -472,8 +584,15 @@
                     <i class="fas fa-lock"></i>
                 </div>
 
-                <div class="forgot-password">
-                    <a href="#" onclick="showComingSoon()">Forgot Password?</a>
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember_me">
+                        <span class="checkmark"></span>
+                        Remember me
+                    </label>
+                    <div class="forgot-password">
+                        <a href="{{ url_for('main.forgot_password') }}">Forgot Password?</a>
+                    </div>
                 </div>
 
                 <button type="submit" class="login-btn">
@@ -482,20 +601,7 @@
                 </button>
             </form>
 
-            <div class="divider">
-                <span>or continue with</span>
-            </div>
 
-            <div class="social-login">
-                <a href="#" class="social-btn" onclick="showComingSoon()">
-                    <i class="fab fa-google"></i>
-                    Google
-                </a>
-                <a href="#" class="social-btn" onclick="showComingSoon()">
-                    <i class="fab fa-github"></i>
-                    GitHub
-                </a>
-            </div>
 
             <div class="switch-link">
                 Don't have an account? <a href="{{ url_for('main.register') }}">Create one</a>
@@ -549,40 +655,7 @@
             });
         });
 
-        // Coming soon notification
-        function showComingSoon() {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: var(--success-gradient);
-                color: white;
-                padding: 15px 20px;
-                border-radius: 12px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-                z-index: 1000;
-                animation: slideInRight 0.3s ease;
-                font-size: 0.9rem;
-            `;
-            notification.innerHTML = '<i class="fas fa-info-circle" style="margin-right: 8px;"></i>Coming Soon!';
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
-        }
-
-        // Add slide in animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideInRight {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-        `;
-        document.head.appendChild(style);
+        // Google OAuth login is now functional
 
         // Auto-focus first input
         document.addEventListener('DOMContentLoaded', function() {
