@@ -1,6 +1,15 @@
 # 🚀 Real-Time Chat Application
 
-A modern, secure real-time chat application built with Flask, SocketIO, and PostgreSQL. Features comprehensive authentication, real-time messaging, file sharing, and a beautiful responsive UI.
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-chatapp--3g10.onrender.com-blue?style=for-the-badge)](https://chatapp-3g10.onrender.com)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/vaibhavpatil29/real-time-chat-app)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-3.1+-green?style=for-the-badge&logo=flask)](https://flask.palletsprojects.com)
+
+A modern, secure real-time chat application built with Flask, SocketIO, and PostgreSQL. Features comprehensive authentication, real-time messaging, emoji picker, and a beautiful responsive UI.
+
+## 🌟 **[Try the Live Demo →](https://chatapp-3g10.onrender.com)**
+
+> **Note**: The free tier may take 30-60 seconds to wake up from sleep mode on first visit.
 
 ## ✨ Features
 
@@ -17,29 +26,49 @@ A modern, secure real-time chat application built with Flask, SocketIO, and Post
 ### 💬 Real-Time Chat
 - **Instant Messaging** with WebSocket technology
 - **Multiple Chat Rooms** support
-- **Private Messaging** between users
-- **File Sharing** capabilities
-- **Typing Indicators** for better UX
+- **Custom Emoji Picker** with 90+ emojis
+- **Quick Emoji Bar** for popular emojis
 - **Online User Status** tracking
 - **Message History** persistence
+- **Mobile-Optimized** chat interface
 
 ### 🎨 Modern UI/UX
-- **Dark/Light Theme** toggle
-- **Responsive Design** for all devices
-- **Beautiful Animations** and transitions
-- **Modern Glass-morphism** design
-- **Accessibility** features
-- **Progressive Web App** ready
+- **Dark/Light Theme** toggle with smooth transitions
+- **Fully Responsive Design** for all devices
+- **Mobile Users Sidebar** with slide-out animation
+- **Beautiful Glass-morphism** design
+- **Touch-Friendly Interface** (44px+ touch targets)
+- **Modern Animations** and micro-interactions
+- **Professional Gradient Backgrounds**
 
 ## 🛠️ Technology Stack
 
-- **Backend**: Flask, Flask-SocketIO, SQLAlchemy
-- **Database**: PostgreSQL
+- **Backend**: Flask 3.1+, Flask-SocketIO, SQLAlchemy
+- **Database**: PostgreSQL (Production), SQLite (Development)
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+)
 - **Real-time**: WebSocket with Socket.IO
 - **Authentication**: Flask-Login, Werkzeug Security
-- **Migrations**: Flask-Migrate
+- **Deployment**: Render.com with gunicorn + eventlet
 - **Security**: CSRF protection, rate limiting, password hashing
+
+## 🌐 Live Deployment
+
+**Live Demo**: [https://chatapp-3g10.onrender.com](https://chatapp-3g10.onrender.com)
+
+### Deployment Features:
+- ✅ **Production Ready** - Deployed on Render.com
+- ✅ **PostgreSQL Database** - Persistent data storage
+- ✅ **HTTPS Enabled** - Secure connections
+- ✅ **Auto-scaling** - Handles multiple users
+- ✅ **WebSocket Support** - Real-time messaging
+- ✅ **Mobile Optimized** - Works on all devices
+
+### Test the Live App:
+1. **Visit**: [chatapp-3g10.onrender.com](https://chatapp-3g10.onrender.com)
+2. **Register** a new account or login
+3. **Start chatting** in the general room
+4. **Test responsive design** on mobile/tablet
+5. **Try dark/light themes** and emoji picker
 
 ## 📋 Prerequisites
 
